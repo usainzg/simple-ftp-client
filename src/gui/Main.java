@@ -19,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.SwingConstants;
+import java.awt.Color;
 
 public class Main extends JFrame implements ActionListener{
 
@@ -33,6 +35,8 @@ public class Main extends JFrame implements ActionListener{
 	private JTextField txtServer;
 	private JButton btnConnect, btnUpload, btnDownload, btnExit;
 	private JList<String> list;
+	private JLabel label;
+	private JLabel label_1;
 
 	/**
 	 * Launch the application.
@@ -62,9 +66,9 @@ public class Main extends JFrame implements ActionListener{
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{61, 0, 0, 124, 0, 0, 122, 55, 0};
-		gbl_contentPane.rowHeights = new int[]{47, 0, 0, 0, 0, 0, -11, 0, 59, 0};
+		gbl_contentPane.rowHeights = new int[]{47, 0, 0, 0, 0, 0, -11, 0, 0, 0, 0, 59, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
 		JLabel lblUsuario = new JLabel("Usuario:");
@@ -163,6 +167,23 @@ public class Main extends JFrame implements ActionListener{
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(list);
 		
+		label = new JLabel("-");
+		GridBagConstraints gbc_label = new GridBagConstraints();
+		gbc_label.insets = new Insets(0, 0, 5, 5);
+		gbc_label.gridx = 1;
+		gbc_label.gridy = 9;
+		contentPane.add(label, gbc_label);
+		
+		label_1 = new JLabel("-");
+		label_1.setForeground(Color.RED);
+		label_1.setHorizontalTextPosition(SwingConstants.LEFT);
+		label_1.setHorizontalAlignment(SwingConstants.LEFT);
+		GridBagConstraints gbc_label_1 = new GridBagConstraints();
+		gbc_label_1.insets = new Insets(0, 0, 5, 5);
+		gbc_label_1.gridx = 1;
+		gbc_label_1.gridy = 10;
+		contentPane.add(label_1, gbc_label_1);
+		
 		// add action listeners
 		btnConnect.addActionListener(this);
 		btnExit.addActionListener(this);
@@ -173,7 +194,16 @@ public class Main extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		
+		if(e.getSource() == btnConnect){
+			
+		}else if(e.getSource() == btnExit){
+			System.exit(0);
+		}else if(e.getSource() == btnDownload){
+			
+		}else if(e.getSource() == btnUpload){
+			
+		}
 		
 	}
 
