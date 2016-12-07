@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -7,20 +8,23 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
-import java.awt.Color;
+import javax.swing.border.EmptyBorder;
+
+import services.MyClient;
 
 public class Main extends JFrame implements ActionListener{
 
@@ -37,6 +41,8 @@ public class Main extends JFrame implements ActionListener{
 	private JList<String> list;
 	private JLabel label;
 	private JLabel label_1;
+	private MyClient ftpClient;
+	private JButton btnDisconnect;
 
 	/**
 	 * Launch the application.
@@ -123,9 +129,19 @@ public class Main extends JFrame implements ActionListener{
 		btnConnect.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		GridBagConstraints gbc_btnConnect = new GridBagConstraints();
 		gbc_btnConnect.insets = new Insets(0, 0, 5, 5);
-		gbc_btnConnect.gridx = 6;
+		gbc_btnConnect.gridx = 5;
 		gbc_btnConnect.gridy = 2;
 		contentPane.add(btnConnect, gbc_btnConnect);
+		
+		// add action listeners
+		btnConnect.addActionListener(this);
+		
+		btnDisconnect = new JButton("Desconectarse");
+		GridBagConstraints gbc_btnDisconnect = new GridBagConstraints();
+		gbc_btnDisconnect.insets = new Insets(0, 0, 5, 5);
+		gbc_btnDisconnect.gridx = 6;
+		gbc_btnDisconnect.gridy = 2;
+		contentPane.add(btnDisconnect, gbc_btnDisconnect);
 		
 		btnUpload = new JButton("Subir");
 		btnUpload.setFont(new Font("Lucida Grande", Font.BOLD, 13));
@@ -184,8 +200,8 @@ public class Main extends JFrame implements ActionListener{
 		gbc_label_1.gridy = 10;
 		contentPane.add(label_1, gbc_label_1);
 		
-		// add action listeners
 		btnConnect.addActionListener(this);
+		btnDisconnect.addActionListener(this);
 		btnExit.addActionListener(this);
 		btnDownload.addActionListener(this);
 		btnUpload.addActionListener(this);
@@ -197,14 +213,61 @@ public class Main extends JFrame implements ActionListener{
 		
 		if(e.getSource() == btnConnect){
 			
+			if(!txtUser.getText().equalsIgnoreCase("") && 
+					!new String(txtPass.getPassword()).equalsIgnoreCase("")){
+				
+				ftpClient = new MyClient(txtUser.getText(), new String(txtPass.getPassword()), txtServer.getText());
+				
+				int out = ftpClient.getConnection();
+				
+				switch(out){
+				
+				case 1:
+					JOptionPane.showMessageDialog(this, "Usuario logeado correctamente.");
+					btnConnect.setEnabled(false);
+					btnDownload.setEnabled(true);
+					btnUpload.setEnabled(true);
+					btnDisconnect.setEnabled(true);
+					break;
+				case 0:
+					JOptionPane.showMessageDialog(this, "Datos logeo incorrectos.");
+					break;
+				case -1:
+					JOptionPane.showMessageDialog(this, "Error al establecer conexion con el servidor");
+					break;
+				}
+				
+			}else {
+				JOptionPane.showMessageDialog(this, "Debes completar todos los campos para poder logearte...");
+			}
+			
 		}else if(e.getSource() == btnExit){
+			if(!btnConnect.isEnabled())
+				try {
+					ftpClient.disconnectClient();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			System.exit(0);
 		}else if(e.getSource() == btnDownload){
 			
 		}else if(e.getSource() == btnUpload){
 			
+		}else if(e.getSource() == btnDisconnect){
+			
+			if(!btnConnect.isEnabled())
+				try {
+					ftpClient.disconnectClient();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			
+			btnConnect.setEnabled(true);
+			btnDownload.setEnabled(false);
+			btnUpload.setEnabled(false);
+			btnDisconnect.setEnabled(false);
+			
 		}
 		
 	}
-
 }

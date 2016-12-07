@@ -16,23 +16,26 @@ public class MyClient {
 	
 	private String userName;
 	private String password;
+	private String server;
 	
 	private FTPClient client;
 	
-	public MyClient(String username, String password) {
+	public MyClient(String username, String password, String server) {
 		this.userName = username;
 		this.password = password;
+		this.server = server.equalsIgnoreCase("") ? Model.FTP_SERVER_ADDR : server;
 		client = new FTPClient();
 	}
 	
 	public int getConnection() {
+		
 		try {
-			
-			client.connect(Model.FTP_SERVER_ACCESS_ADDR);
+			client.connect(server);
 			boolean login = client.login(userName, password);
 			
 			return login ? 1 : 0;
 		}catch(IOException e){
+			e.printStackTrace();
 			return -1;
 		}
 	}

@@ -8,6 +8,4 @@ public class Model {
 	public static final int FTP_DATA_PORT = 20;
 	public static final String FTP_SERVER_USER = "usainzg";
 	public static final String FTP_SERVER_PASSWORD = "mofeta";
-	public static final String FTP_SERVER_ACCESS_ADDR = FTP_SERVER_USER + "@" + FTP_SERVER_ADDR;
-
 }
