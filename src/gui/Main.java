@@ -133,9 +133,6 @@ public class Main extends JFrame implements ActionListener{
 		gbc_btnConnect.gridy = 2;
 		contentPane.add(btnConnect, gbc_btnConnect);
 		
-		// add action listeners
-		btnConnect.addActionListener(this);
-		
 		btnDisconnect = new JButton("Desconectarse");
 		GridBagConstraints gbc_btnDisconnect = new GridBagConstraints();
 		gbc_btnDisconnect.insets = new Insets(0, 0, 5, 5);
@@ -200,6 +197,7 @@ public class Main extends JFrame implements ActionListener{
 		gbc_label_1.gridy = 10;
 		contentPane.add(label_1, gbc_label_1);
 		
+		// add action listeners
 		btnConnect.addActionListener(this);
 		btnDisconnect.addActionListener(this);
 		btnExit.addActionListener(this);
