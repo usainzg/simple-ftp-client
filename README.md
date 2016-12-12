@@ -20,4 +20,4 @@ Simple ftp client written in Java.
 
 [ ] If error occurs, print to errorLbl.
 
- 
+[ ] Update files with JFileChooser.

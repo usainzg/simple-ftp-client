@@ -22,29 +22,55 @@ public class MyClient {
 	private String password;
 	private String server;
 	
-	private JList<String> lista;
-	private DefaultListModel<String> modelo;
+	private JList<String> list;
+	private DefaultListModel<String> model;
 	
 	private FTPClient client;
 	
-	public MyClient(String username, String password, String server, JList<String> lista) {
+	public MyClient(String username, String password, String server, JList<String> list) {
+		// set username and password
 		this.userName = username;
 		this.password = password;
-		this.server = server.equalsIgnoreCase("") ? Model.FTP_SERVER_ADDR : server;
+		
+		// set server addr
+		this.server = server;
+		
+		// init FTPClient obj
 		client = new FTPClient();
-		this.lista = lista;
-		modelo = new DefaultListModel<>();
+		
+		// set lista
+		this.list = list;
+		
+		// set new model for the list
+		model = new DefaultListModel<>();
+		
+		// set selectedDirectory equals to initialDirectory (the root directory "/")
 		selectedDirectory = initialDirectory;
 		
 	}
 	
+	/*
+	 * Gets connection with ftp server
+	 * @return int: 0 if connection is ok and -1 if error occurs
+	 */
 	public int getConnection() {
-		
 		try {
 			client.connect(server);
+			return 0;
+		}catch(IOException e){
+			return -1;
+		}
+	}
+	
+	/*
+	 * Login of the user
+	 * @return int: 1 if is logged, 0 if is not logged and -1 if error occurs
+	 */
+	public int logUser(){
+		try {
 			boolean login = client.login(userName, password);
 			return login ? 1 : 0;
-		}catch(IOException e){
+		} catch (IOException e) {
 			return -1;
 		}
 	}
@@ -72,17 +98,17 @@ public class MyClient {
 	
 	public void inflateList(FTPFile[] ficheros, String directorioActual){
 		
-		modelo.addElement(initialDirectory);
+		model.addElement(initialDirectory);
 		for(int i = 0; i < ficheros.length; i++){
 			
 			if(!(ficheros[i].getName()).equals(".") && !(ficheros[i].getName()).equals("..")){
 				String f = ficheros[i].getName();
 				if(ficheros[i].isDirectory()) f = "(DIR) " + f;
-				modelo.addElement(f);
+				model.addElement(f);
 			}
 		}
 		
-		lista.setModel(modelo);
+		list.setModel(model);
 	}
 	
 	public void setSelectedDirectory(String dir){

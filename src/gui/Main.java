@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -28,8 +29,10 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.net.ftp.FTPFile;
 
+import classes.Model;
 import services.MyClient;
 import util.Utilidades;
+import java.awt.Dimension;
 
 public class Main extends JFrame implements ActionListener, MouseListener{
 
@@ -44,8 +47,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 	private JTextField txtServer;
 	private JButton btnConnect, btnUpload, btnDownload, btnExit;
 	private JList<String> list;
-	private JLabel label;
-	private JLabel label_1;
+	private JLabel lblTxt;
+	private JLabel lblError;
 	private MyClient ftpClient;
 	private JButton btnDisconnect;
 	private String selectedItem;
@@ -70,9 +73,12 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 	 * Create the frame.
 	 */
 	public Main() {
+		setMinimumSize(new Dimension(800, 600));
+		setMaximumSize(new Dimension(800, 600));
+		setResizable(false);
 		setTitle("Simple FTP Client");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 654, 452);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setBounds(100, 100, 716, 482);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -174,7 +180,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridheight = 4;
+		gbc_scrollPane.gridheight = 5;
 		gbc_scrollPane.gridwidth = 4;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
@@ -186,22 +192,22 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(list);
 		
-		label = new JLabel("-");
-		GridBagConstraints gbc_label = new GridBagConstraints();
-		gbc_label.insets = new Insets(0, 0, 5, 5);
-		gbc_label.gridx = 1;
-		gbc_label.gridy = 9;
-		contentPane.add(label, gbc_label);
+		lblTxt = new JLabel("-");
+		GridBagConstraints gbc_lblTxt = new GridBagConstraints();
+		gbc_lblTxt.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTxt.gridx = 1;
+		gbc_lblTxt.gridy = 9;
+		contentPane.add(lblTxt, gbc_lblTxt);
 		
-		label_1 = new JLabel("-");
-		label_1.setForeground(Color.RED);
-		label_1.setHorizontalTextPosition(SwingConstants.LEFT);
-		label_1.setHorizontalAlignment(SwingConstants.LEFT);
-		GridBagConstraints gbc_label_1 = new GridBagConstraints();
-		gbc_label_1.insets = new Insets(0, 0, 5, 5);
-		gbc_label_1.gridx = 1;
-		gbc_label_1.gridy = 10;
-		contentPane.add(label_1, gbc_label_1);
+		lblError = new JLabel("-");
+		lblError.setForeground(Color.RED);
+		lblError.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblError.setHorizontalAlignment(SwingConstants.LEFT);
+		GridBagConstraints gbc_lblError = new GridBagConstraints();
+		gbc_lblError.insets = new Insets(0, 0, 5, 5);
+		gbc_lblError.gridx = 1;
+		gbc_lblError.gridy = 10;
+		contentPane.add(lblError, gbc_lblError);
 		
 		// add action listeners
 		btnConnect.addActionListener(this);
@@ -215,6 +221,12 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		btnDownload.setEnabled(false);
 		btnUpload.setEnabled(false);
 		btnDisconnect.setEnabled(false);
+		
+		int opt = JOptionPane.showConfirmDialog(this, "¿Desea cargar la direccion del servidor por defecto?", "Servidor por defecto", JOptionPane.YES_NO_OPTION);
+		if(opt == JOptionPane.YES_OPTION){
+			txtServer.setText(Model.FTP_SERVER_ADDR);
+		}
+		
 	
 	}
 
@@ -224,7 +236,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		if(e.getSource() == btnConnect){
 			
 			if(!txtUser.getText().equalsIgnoreCase("") && 
-					!new String(txtPass.getPassword()).equalsIgnoreCase("")){
+					!new String(txtPass.getPassword()).equalsIgnoreCase("") && !txtServer.getText().equalsIgnoreCase("")){
 				
 				ftpClient = new MyClient(txtUser.getText(), new String(txtPass.getPassword()), txtServer.getText(), list);
 				
@@ -269,11 +281,24 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			System.exit(0);
 		}else if(e.getSource() == btnDownload){
 			
+			// TODO
 			String o = Utilidades.sliceSelectedItem(selectedItem);
-		
-			System.out.println("Selected item: " + o);
+			
+			
 			
 		}else if(e.getSource() == btnUpload){
+			
+			JFileChooser jFile = new JFileChooser();
+			jFile.setDialogTitle("Seleccione el fichero a subir");
+			jFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int result = jFile.showDialog(this, "Subir");
+			
+			if(result == JFileChooser.APPROVE_OPTION){
+				
+				// TODO
+			}
+			
+			
 			
 		}else if(e.getSource() == btnDisconnect){
 			
@@ -301,6 +326,9 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			btnDownload.setEnabled(true);
 			
 			selectedItem = list.getSelectedValue();
+			
+			lblTxt.setText("Selected item: " + selectedItem);
+			
 		}
 		
 		
