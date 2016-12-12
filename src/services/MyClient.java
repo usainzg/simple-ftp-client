@@ -8,8 +8,6 @@ import javax.swing.JList;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
-import classes.Model;
-
 public class MyClient {
 	
 	private final String initialDirectory = "/";
@@ -75,10 +73,15 @@ public class MyClient {
 		}
 	}
 	
+	/*
+	 * Get files list of the working directory
+	 * @return FTPFile[]: if client is connected returns files list, else returns null
+	 */
 	public FTPFile[] getFilesList() throws IOException{
 		if(client.isConnected()) return client.listFiles();
 		else return null;
 	}
+	
 	
 	public void changeDirectory() throws IOException{
 		if(client.isConnected()) client.changeWorkingDirectory(selectedDirectory);
@@ -113,6 +116,10 @@ public class MyClient {
 	
 	public void setSelectedDirectory(String dir){
 		selectedDirectory = dir;
+	}
+	
+	public void clearList(){
+		model.removeAllElements();
 	}
 	
 	

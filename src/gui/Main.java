@@ -242,6 +242,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 				
 				int out = ftpClient.getConnection();
 				
+				if(out == 0) out = ftpClient.logUser();
+				
 				switch(out){
 				
 				case 1:
@@ -313,6 +315,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			btnDownload.setEnabled(false);
 			btnUpload.setEnabled(false);
 			btnDisconnect.setEnabled(false);
+			
+			ftpClient.clearList();
 			
 		}
 		
