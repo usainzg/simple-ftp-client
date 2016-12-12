@@ -5,3 +5,19 @@ Simple ftp client written in Java.
 [ ] check connection errors.
 
 [ ] check errors when disconnecting clients.
+
+[ ] MouseClicked event on list.
+
+[ ] DoubleClicked on list for download fich or dir.
+
+[ ] If we are in the root ("/"), not do anything.
+
+[ ] If we are in other dir and click on ("/"), go to parent dir.
+
+[ ] If select a file, update fichSelec and print to lbl. Enable btnDescarga.
+
+[ ] If select a dir, update direcActual, update list. (REMOVE FROM STRING "DIR").
+
+[ ] If error occurs, print to errorLbl.
+
+ 

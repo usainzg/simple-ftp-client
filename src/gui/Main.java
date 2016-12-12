@@ -24,6 +24,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.net.ftp.FTPFile;
+
 import services.MyClient;
 
 public class Main extends JFrame implements ActionListener{
@@ -203,6 +205,11 @@ public class Main extends JFrame implements ActionListener{
 		btnExit.addActionListener(this);
 		btnDownload.addActionListener(this);
 		btnUpload.addActionListener(this);
+		
+		btnConnect.setEnabled(true);
+		btnDownload.setEnabled(false);
+		btnUpload.setEnabled(false);
+		btnDisconnect.setEnabled(false);
 	
 	}
 
@@ -214,7 +221,7 @@ public class Main extends JFrame implements ActionListener{
 			if(!txtUser.getText().equalsIgnoreCase("") && 
 					!new String(txtPass.getPassword()).equalsIgnoreCase("")){
 				
-				ftpClient = new MyClient(txtUser.getText(), new String(txtPass.getPassword()), txtServer.getText());
+				ftpClient = new MyClient(txtUser.getText(), new String(txtPass.getPassword()), txtServer.getText(), list);
 				
 				int out = ftpClient.getConnection();
 				
@@ -226,6 +233,14 @@ public class Main extends JFrame implements ActionListener{
 					btnDownload.setEnabled(true);
 					btnUpload.setEnabled(true);
 					btnDisconnect.setEnabled(true);
+					
+					try {
+						ftpClient.changeDirectory();
+						FTPFile[] fich = ftpClient.getFilesList();
+						ftpClient.inflateList(fich, "/");
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					break;
 				case 0:
 					JOptionPane.showMessageDialog(this, "Datos logeo incorrectos.");
@@ -255,7 +270,7 @@ public class Main extends JFrame implements ActionListener{
 			
 			if(!btnConnect.isEnabled())
 				try {
-					ftpClient.disconnectClient();
+					ftpClient.logoutClient();
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
