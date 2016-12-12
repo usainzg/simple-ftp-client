@@ -8,6 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -27,8 +29,9 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.net.ftp.FTPFile;
 
 import services.MyClient;
+import util.Utilidades;
 
-public class Main extends JFrame implements ActionListener{
+public class Main extends JFrame implements ActionListener, MouseListener{
 
 	/**
 	 * 
@@ -45,6 +48,7 @@ public class Main extends JFrame implements ActionListener{
 	private JLabel label_1;
 	private MyClient ftpClient;
 	private JButton btnDisconnect;
+	private String selectedItem;
 
 	/**
 	 * Launch the application.
@@ -205,6 +209,7 @@ public class Main extends JFrame implements ActionListener{
 		btnExit.addActionListener(this);
 		btnDownload.addActionListener(this);
 		btnUpload.addActionListener(this);
+		list.addMouseListener(this);
 		
 		btnConnect.setEnabled(true);
 		btnDownload.setEnabled(false);
@@ -230,7 +235,7 @@ public class Main extends JFrame implements ActionListener{
 				case 1:
 					JOptionPane.showMessageDialog(this, "Usuario logeado correctamente.");
 					btnConnect.setEnabled(false);
-					btnDownload.setEnabled(true);
+					btnDownload.setEnabled(false);
 					btnUpload.setEnabled(true);
 					btnDisconnect.setEnabled(true);
 					
@@ -264,6 +269,10 @@ public class Main extends JFrame implements ActionListener{
 			System.exit(0);
 		}else if(e.getSource() == btnDownload){
 			
+			String o = Utilidades.sliceSelectedItem(selectedItem);
+		
+			System.out.println("Selected item: " + o);
+			
 		}else if(e.getSource() == btnUpload){
 			
 		}else if(e.getSource() == btnDisconnect){
@@ -281,6 +290,43 @@ public class Main extends JFrame implements ActionListener{
 			btnDisconnect.setEnabled(false);
 			
 		}
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+		if(e.getSource() == list){
+			
+			btnDownload.setEnabled(true);
+			
+			selectedItem = list.getSelectedValue();
+		}
+		
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }

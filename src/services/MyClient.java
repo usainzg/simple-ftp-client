@@ -34,6 +34,8 @@ public class MyClient {
 		client = new FTPClient();
 		this.lista = lista;
 		modelo = new DefaultListModel<>();
+		selectedDirectory = initialDirectory;
+		
 	}
 	
 	public int getConnection() {
@@ -53,7 +55,7 @@ public class MyClient {
 	}
 	
 	public void changeDirectory() throws IOException{
-		if(client.isConnected()) client.changeWorkingDirectory(initialDirectory);
+		if(client.isConnected()) client.changeWorkingDirectory(selectedDirectory);
 	}
 	
 	public int logoutClient() throws IOException {
@@ -81,6 +83,10 @@ public class MyClient {
 		}
 		
 		lista.setModel(modelo);
+	}
+	
+	public void setSelectedDirectory(String dir){
+		selectedDirectory = dir;
 	}
 	
 	
