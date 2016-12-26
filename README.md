@@ -4,8 +4,6 @@ Simple ftp client written in Java.
 # TODO LIST
 [ ] check connection errors.
 
-[ ] check errors when disconnecting clients.
-
 [ ] MouseClicked event on list.
 
 [ ] DoubleClicked on list for download fich or dir.

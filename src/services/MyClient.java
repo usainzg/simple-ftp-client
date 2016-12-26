@@ -26,25 +26,13 @@ public class MyClient {
 	private FTPClient client;
 	
 	public MyClient(String username, String password, String server, JList<String> list) {
-		// set username and password
 		this.userName = username;
 		this.password = password;
-		
-		// set server addr
 		this.server = server;
-		
-		// init FTPClient obj
 		client = new FTPClient();
-		
-		// set lista
 		this.list = list;
-		
-		// set new model for the list
 		model = new DefaultListModel<>();
-		
-		// set selectedDirectory equals to initialDirectory (the root directory "/")
 		selectedDirectory = initialDirectory;
-		
 	}
 	
 	/*
@@ -82,11 +70,6 @@ public class MyClient {
 		else return null;
 	}
 	
-	
-	public void changeDirectory() throws IOException{
-		if(client.isConnected()) client.changeWorkingDirectory(selectedDirectory);
-	}
-	
 	public int logoutClient() throws IOException {
 		if(client.isConnected()) {
 			return client.logout() ? 1 : 0;
@@ -94,12 +77,13 @@ public class MyClient {
 		return -1;
 	}
 	
+	// FIXME 
 	public void disconnectClient() throws IOException {
 		int outputLogout = logoutClient();
 		if(outputLogout == 1) client.disconnect();
 	}
 	
-	public void inflateList(FTPFile[] ficheros, String directorioActual){
+	private void inflateList(FTPFile[] ficheros){
 		
 		model.addElement(initialDirectory);
 		for(int i = 0; i < ficheros.length; i++){
@@ -121,6 +105,35 @@ public class MyClient {
 	public void clearList(){
 		model.removeAllElements();
 	}
+	
+	private void getClearAndInflateList() throws Exception{
+		FTPFile[] files = getFilesList();
+		clearList();
+		inflateList(files);
+	}
+	
+	private void changeToParentDir() throws Exception{
+		if(client.printWorkingDirectory().equals("/")) return;
+		
+		client.changeToParentDirectory();
+		selectedDirectory = client.printWorkingDirectory();
+		client.changeWorkingDirectory(selectedDirectory);
+	}
+	
+	private void changeToSelectedDir() throws Exception{
+		client.changeWorkingDirectory(selectedDirectory);
+	}
+	
+	public void changeDirAndInflateList() throws Exception{
+		changeToSelectedDir();
+		getClearAndInflateList();
+	}
+	
+	public void changeToParentDirAndInflateList() throws Exception{
+		changeToParentDir();
+		getClearAndInflateList();
+	}
+	
 	
 	
 

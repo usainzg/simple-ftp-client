@@ -254,10 +254,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 					btnDisconnect.setEnabled(true);
 					
 					try {
-						ftpClient.changeDirectory();
-						FTPFile[] fich = ftpClient.getFilesList();
-						ftpClient.inflateList(fich, "/");
-					} catch (IOException e1) {
+						ftpClient.changeDirAndInflateList();
+					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 					break;
@@ -327,38 +325,52 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		
 		if(e.getSource() == list){
 			
-			btnDownload.setEnabled(true);
-			
-			selectedItem = list.getSelectedValue();
-			
-			lblTxt.setText("Selected item: " + selectedItem);
-			
+			if(list.getSelectedIndex() == 0){
+				try {
+					ftpClient.changeToParentDirAndInflateList();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}else {
+				
+				selectedItem = list.getSelectedValue();
+				
+				if(isDir(selectedItem)){
+					btnDownload.setEnabled(false);
+					String dir = Utilidades.sliceSelectedItem(selectedItem).trim();
+					ftpClient.setSelectedDirectory(dir);
+					try {
+						ftpClient.changeDirAndInflateList();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					
+				}else {
+					btnDownload.setEnabled(true);
+				}
+				
+			}
 		}
-		
-		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	}
+	
+	
+	private boolean isDir(String item){
+		return item.startsWith("(DIR)");
 	}
 }
