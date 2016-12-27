@@ -1,10 +1,16 @@
 package services;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JList;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -25,7 +31,9 @@ public class MyClient {
 	
 	private FTPClient client;
 	
-	public MyClient(String username, String password, String server, JList<String> list) {
+	private JLabel msgLbl, errLbl;
+	
+	public MyClient(String username, String password, String server, JList<String> list, JLabel msgLbl, JLabel errLbl) {
 		this.userName = username;
 		this.password = password;
 		this.server = server;
@@ -33,6 +41,8 @@ public class MyClient {
 		this.list = list;
 		model = new DefaultListModel<>();
 		selectedDirectory = initialDirectory;
+		this.msgLbl = msgLbl;
+		this.errLbl = errLbl;
 	}
 	
 	/*
@@ -77,10 +87,8 @@ public class MyClient {
 		return -1;
 	}
 	
-	// FIXME 
 	public void disconnectClient() throws IOException {
-		int outputLogout = logoutClient();
-		if(outputLogout == 1) client.disconnect();
+		if(client.isConnected()) client.disconnect();
 	}
 	
 	private void inflateList(FTPFile[] ficheros){
@@ -132,6 +140,53 @@ public class MyClient {
 	public void changeToParentDirAndInflateList() throws Exception{
 		changeToParentDir();
 		getClearAndInflateList();
+	}
+	
+	public void uploadFile(File file){
+		FileInputStream fis = null;
+		try{
+			client.setFileType(FTP.BINARY_FILE_TYPE);
+			String filePath = file.getAbsolutePath();
+			String name = file.getName();
+			fis = new FileInputStream(filePath);
+			client.storeFile(name, fis);
+			getClearAndInflateList();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(fis != null)
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	public void downloadFile(String fileName){
+		BufferedOutputStream out = null;
+		try {
+			String path = client.printWorkingDirectory() + File.separator + fileName;
+			String filePath = System.getProperty("user.dir") + File.separator + fileName;
+			client.setFileType(FTP.BINARY_FILE_TYPE);
+			out = new BufferedOutputStream(new FileOutputStream(filePath));
+			boolean success = client.retrieveFile(path, out);
+			if(success){
+				msgLbl.setText("DESCARGA CORRECTA");
+			}else{
+				errLbl.setText("ERROR AL DESCARGAR");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			if(out != null){
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	

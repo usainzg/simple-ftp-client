@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -238,7 +239,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			if(!txtUser.getText().equalsIgnoreCase("") && 
 					!new String(txtPass.getPassword()).equalsIgnoreCase("") && !txtServer.getText().equalsIgnoreCase("")){
 				
-				ftpClient = new MyClient(txtUser.getText(), new String(txtPass.getPassword()), txtServer.getText(), list);
+				ftpClient = new MyClient(txtUser.getText(), new String(txtPass.getPassword()), txtServer.getText(), list, lblTxt, lblError);
 				
 				int out = ftpClient.getConnection();
 				
@@ -272,18 +273,19 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			}
 			
 		}else if(e.getSource() == btnExit){
-			if(!btnConnect.isEnabled())
+			if(btnConnect.isEnabled())
 				try {
 					ftpClient.disconnectClient();
+					System.exit(0);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-			System.exit(0);
+			else
+				JOptionPane.showMessageDialog(this, "Debes cerrar sesion antes de desconectarte!", "Error", JOptionPane.WARNING_MESSAGE);
 		}else if(e.getSource() == btnDownload){
 			
-			// TODO
-			String o = Utilidades.sliceSelectedItem(selectedItem);
-			
+			String file = Utilidades.sliceSelectedItem(selectedItem);
+			ftpClient.downloadFile(file);
 			
 			
 		}else if(e.getSource() == btnUpload){
@@ -295,10 +297,10 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			
 			if(result == JFileChooser.APPROVE_OPTION){
 				
-				// TODO
+				File fich = jFile.getSelectedFile();
+				ftpClient.uploadFile(fich);
+				
 			}
-			
-			
 			
 		}else if(e.getSource() == btnDisconnect){
 			
@@ -314,10 +316,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			btnUpload.setEnabled(false);
 			btnDisconnect.setEnabled(false);
 			
-			ftpClient.clearList();
-			
+			ftpClient.clearList();	
 		}
-		
 	}
 
 	@Override
