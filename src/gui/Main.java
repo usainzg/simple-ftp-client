@@ -53,6 +53,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 	private MyClient ftpClient;
 	private JButton btnDisconnect;
 	private String selectedItem;
+	private JButton btnCrearDirectorio;
+	private JButton btnEliminarDirectorio;
 
 	/**
 	 * Launch the application.
@@ -85,9 +87,9 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{61, 0, 0, 124, 0, 0, 122, 55, 0};
-		gbl_contentPane.rowHeights = new int[]{47, 0, 0, 0, 0, 0, -11, 0, 0, 0, 0, 59, 0};
+		gbl_contentPane.rowHeights = new int[]{47, 0, 0, 0, 0, 0, 0, 0, -11, 0, 0, 59, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
 		JLabel lblUsuario = new JLabel("Usuario:");
@@ -169,12 +171,26 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		gbc_btnDownload.gridy = 4;
 		contentPane.add(btnDownload, gbc_btnDownload);
 		
+		btnCrearDirectorio = new JButton("Crear Directorio");
+		GridBagConstraints gbc_btnCrearDirectorio = new GridBagConstraints();
+		gbc_btnCrearDirectorio.insets = new Insets(0, 0, 5, 5);
+		gbc_btnCrearDirectorio.gridx = 6;
+		gbc_btnCrearDirectorio.gridy = 5;
+		contentPane.add(btnCrearDirectorio, gbc_btnCrearDirectorio);
+		
+		btnEliminarDirectorio = new JButton("Eliminar Directorio");
+		GridBagConstraints gbc_btnEliminarDirectorio = new GridBagConstraints();
+		gbc_btnEliminarDirectorio.insets = new Insets(0, 0, 5, 5);
+		gbc_btnEliminarDirectorio.gridx = 6;
+		gbc_btnEliminarDirectorio.gridy = 6;
+		contentPane.add(btnEliminarDirectorio, gbc_btnEliminarDirectorio);
+		
 		btnExit = new JButton("Salir");
 		btnExit.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
 		gbc_btnExit.insets = new Insets(0, 0, 5, 5);
 		gbc_btnExit.gridx = 6;
-		gbc_btnExit.gridy = 5;
+		gbc_btnExit.gridy = 7;
 		contentPane.add(btnExit, gbc_btnExit);
 		
 		JScrollPane scrollPane = new JScrollPane();
