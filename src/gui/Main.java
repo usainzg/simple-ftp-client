@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -26,14 +27,12 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-
-import org.apache.commons.net.ftp.FTPFile;
 
 import classes.Model;
 import services.MyClient;
 import util.Utilidades;
-import java.awt.Dimension;
 
 public class Main extends JFrame implements ActionListener, MouseListener{
 
@@ -61,6 +60,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Main frame = new Main();
@@ -80,7 +80,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		setMaximumSize(new Dimension(800, 600));
 		setResizable(false);
 		setTitle("Simple FTP Client");
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 716, 482);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
