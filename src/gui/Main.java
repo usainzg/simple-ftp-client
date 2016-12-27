@@ -244,6 +244,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			txtServer.setText(Model.FTP_SERVER_ADDR);
 		}
 		
+		ftpClient = new MyClient(txtUser, txtPass, txtServer, list, lblTxt, lblError);
 	
 	}
 
@@ -254,8 +255,6 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			
 			if(!txtUser.getText().equalsIgnoreCase("") && 
 					!new String(txtPass.getPassword()).equalsIgnoreCase("") && !txtServer.getText().equalsIgnoreCase("")){
-				
-				ftpClient = new MyClient(txtUser.getText(), new String(txtPass.getPassword()), txtServer.getText(), list, lblTxt, lblError);
 				
 				int out = ftpClient.getConnection();
 				

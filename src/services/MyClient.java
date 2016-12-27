@@ -9,6 +9,8 @@ import java.io.IOException;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -22,9 +24,9 @@ public class MyClient {
 	private String selectedDirectory;
 	private String selectedFile = "";
 	
-	private String userName;
-	private String password;
-	private String server;
+	private JTextField usernameTxt;
+	private JPasswordField passwordTxt;
+	private JTextField serverTxt;
 	
 	private JList<String> list;
 	private DefaultListModel<String> model;
@@ -33,10 +35,10 @@ public class MyClient {
 	
 	private JLabel msgLbl, errLbl;
 	
-	public MyClient(String username, String password, String server, JList<String> list, JLabel msgLbl, JLabel errLbl) {
-		this.userName = username;
-		this.password = password;
-		this.server = server;
+	public MyClient(JTextField usernameTxt, JPasswordField passwordTxt, JTextField serverTxt, JList<String> list, JLabel msgLbl, JLabel errLbl) {
+		this.usernameTxt = usernameTxt;
+		this.passwordTxt = passwordTxt;
+		this.serverTxt = serverTxt;
 		client = new FTPClient();
 		this.list = list;
 		model = new DefaultListModel<>();
@@ -51,7 +53,7 @@ public class MyClient {
 	 */
 	public int getConnection() {
 		try {
-			client.connect(server);
+			client.connect(serverTxt.getText());
 			return 0;
 		}catch(IOException e){
 			return -1;
@@ -64,7 +66,7 @@ public class MyClient {
 	 */
 	public int logUser(){
 		try {
-			boolean login = client.login(userName, password);
+			boolean login = client.login(usernameTxt.getText(), new String(passwordTxt.getPassword()));
 			return login ? 1 : 0;
 		} catch (IOException e) {
 			return -1;
