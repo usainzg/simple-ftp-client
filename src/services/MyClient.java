@@ -19,10 +19,8 @@ import org.apache.commons.net.ftp.FTPFile;
 public class MyClient {
 	
 	private final String initialDirectory = "/";
-	private final String destinationDirectory = "./";
 	
 	private String selectedDirectory;
-	private String selectedFile = "";
 	
 	private JTextField usernameTxt;
 	private JPasswordField passwordTxt;
@@ -56,6 +54,7 @@ public class MyClient {
 			client.connect(serverTxt.getText());
 			return 0;
 		}catch(IOException e){
+			errLbl.setText("Servidor no disponible, compruebe la conexion");
 			return -1;
 		}
 	}
@@ -69,6 +68,7 @@ public class MyClient {
 			boolean login = client.login(usernameTxt.getText(), new String(passwordTxt.getPassword()));
 			return login ? 1 : 0;
 		} catch (IOException e) {
+			errLbl.setText("Error al intentar logearse.");
 			return -1;
 		}
 	}
@@ -78,8 +78,14 @@ public class MyClient {
 	 * @return FTPFile[]: if client is connected returns files list, else returns null
 	 */
 	public FTPFile[] getFilesList() throws IOException{
-		if(client.isConnected()) return client.listFiles();
-		else return null;
+		try{
+			if(client.isConnected()) return client.listFiles();
+			else return null;
+		}catch(IOException e){
+			errLbl.setText("Error al recoger lista de archivos.");
+			return null;
+		}
+		
 	}
 	
 	public int logoutClient() throws IOException {
@@ -122,16 +128,25 @@ public class MyClient {
 		inflateList(files);
 	}
 	
-	private void changeToParentDir() throws Exception{
-		if(client.printWorkingDirectory().equals("/")) return;
+	private void changeToParentDir(){
+		try{
+			if(client.printWorkingDirectory().equals("/")) return;
+			
+			client.changeToParentDirectory();
+			selectedDirectory = client.printWorkingDirectory();
+			client.changeWorkingDirectory(selectedDirectory);
+		}catch(IOException e){
+			errLbl.setText("Conexion perdida con el servidor.");
+		}
 		
-		client.changeToParentDirectory();
-		selectedDirectory = client.printWorkingDirectory();
-		client.changeWorkingDirectory(selectedDirectory);
 	}
 	
-	private void changeToSelectedDir() throws Exception{
-		client.changeWorkingDirectory(selectedDirectory);
+	private void changeToSelectedDir(){
+		try{
+			client.changeWorkingDirectory(selectedDirectory);
+		}catch(IOException e){
+			errLbl.setText("Conexion perdida con el servidor.");
+		}
 	}
 	
 	public void changeDirAndInflateList() throws Exception{
@@ -154,7 +169,7 @@ public class MyClient {
 			client.storeFile(name, fis);
 			getClearAndInflateList();
 		}catch(Exception e){
-			e.printStackTrace();
+			errLbl.setText("Error al subir " + file.getName() + " al servidor.");
 		}finally{
 			if(fis != null)
 				try {
@@ -176,10 +191,10 @@ public class MyClient {
 			if(success){
 				msgLbl.setText("DESCARGA CORRECTA");
 			}else{
-				errLbl.setText("ERROR AL DESCARGAR");
+				errLbl.setText("DESCARGA NO COMPLETADA");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			errLbl.setText("Conexion perdida con el servidor");
 		}finally{
 			if(out != null){
 				try {

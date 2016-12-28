@@ -76,8 +76,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 	 * Create the frame.
 	 */
 	public Main() {
-		setMinimumSize(new Dimension(800, 600));
-		setMaximumSize(new Dimension(800, 600));
+		setMinimumSize(new Dimension(1024, 728));
+		setMaximumSize(new Dimension(1024, 728));
 		setResizable(false);
 		setTitle("Simple FTP Client");
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -172,6 +172,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		contentPane.add(btnDownload, gbc_btnDownload);
 		
 		btnCrearDirectorio = new JButton("Crear Directorio");
+		btnCrearDirectorio.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		GridBagConstraints gbc_btnCrearDirectorio = new GridBagConstraints();
 		gbc_btnCrearDirectorio.insets = new Insets(0, 0, 5, 5);
 		gbc_btnCrearDirectorio.gridx = 6;
@@ -179,6 +180,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		contentPane.add(btnCrearDirectorio, gbc_btnCrearDirectorio);
 		
 		btnEliminarDirectorio = new JButton("Eliminar Directorio");
+		btnEliminarDirectorio.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		GridBagConstraints gbc_btnEliminarDirectorio = new GridBagConstraints();
 		gbc_btnEliminarDirectorio.insets = new Insets(0, 0, 5, 5);
 		gbc_btnEliminarDirectorio.gridx = 6;
@@ -186,6 +188,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		contentPane.add(btnEliminarDirectorio, gbc_btnEliminarDirectorio);
 		
 		btnExit = new JButton("Salir");
+		btnExit.setForeground(Color.BLACK);
 		btnExit.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
 		gbc_btnExit.insets = new Insets(0, 0, 5, 5);
@@ -344,11 +347,12 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 				try {
 					ftpClient.changeToParentDirAndInflateList();
 				} catch (Exception e1) {
-					e1.printStackTrace();
 				}
 			}else {
 				
 				selectedItem = list.getSelectedValue();
+				
+				lblTxt.setText(selectedItem);
 				
 				if(isDir(selectedItem)){
 					btnDownload.setEnabled(false);
@@ -357,7 +361,6 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 					try {
 						ftpClient.changeDirAndInflateList();
 					} catch (Exception e1) {
-						e1.printStackTrace();
 					}
 					
 				}else {
