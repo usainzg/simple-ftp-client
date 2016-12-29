@@ -206,7 +206,38 @@ public class MyClient {
 		}
 	}
 	
+	public void createDir(String dirName){
+		try{
+			boolean dirCreated = client.makeDirectory(dirName);
+			if(dirCreated) msgLbl.setText("Directorio creado");
+			else errLbl.setText("No se ha podido crear el directorio");
+			getClearAndInflateList();
+		}catch(Exception e){
+			errLbl.setText("Conexion con el servidor perdida");
+		}
+	}
 	
+	public void deleteDir(){
+		try{
+			String dirToDelete = client.printWorkingDirectory();
+			changeToParentDir();
+			boolean dirDeleted = client.removeDirectory(dirToDelete);
+			if(dirDeleted) msgLbl.setText("Directorio eliminado");
+			else errLbl.setText("No se ha podido borrar el directorio");
+			getClearAndInflateList();
+		}catch(Exception e){
+			errLbl.setText("Conexion con el servidor perdida");
+		}
+	}
 	
-
+	public void deleteFile(String fileName){
+		try{
+			boolean fileDeleted = client.deleteFile(fileName);
+			if(fileDeleted) msgLbl.setText("Fichero eliminado");
+			else errLbl.setText("No se ha podido borrar el fichero");
+			getClearAndInflateList();
+		}catch(Exception e){
+			errLbl.setText("Conexion con el servidor perdida");
+		}
+	}
 }

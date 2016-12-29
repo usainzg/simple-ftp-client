@@ -87,9 +87,9 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{61, 0, 0, 124, 0, 0, 122, 55, 0};
-		gbl_contentPane.rowHeights = new int[]{47, 0, 0, 0, 0, 0, 0, 0, -11, 0, 0, 59, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{47, 0, 0, 0, 0, 0, 0, 0, -11, 0, 0, 59, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
 		JLabel lblUsuario = new JLabel("Usuario:");
@@ -235,6 +235,8 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		btnExit.addActionListener(this);
 		btnDownload.addActionListener(this);
 		btnUpload.addActionListener(this);
+		btnCrearDirectorio.addActionListener(this);
+		btnEliminarDirectorio.addActionListener(this);
 		list.addMouseListener(this);
 		
 		btnConnect.setEnabled(true);
@@ -335,6 +337,19 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 			btnDisconnect.setEnabled(false);
 			
 			ftpClient.clearList();	
+		}else if(e.getSource() == btnCrearDirectorio){
+			
+			String newDirName = JOptionPane.showInputDialog("Introduce el nombre del nuevo fichero");
+			
+			if(!newDirName.equals("")) ftpClient.createDir(newDirName);
+		}else if(e.getSource() == btnEliminarDirectorio){
+			
+			if(list.isSelectionEmpty()) {
+				ftpClient.deleteDir();
+			}else if(!isDir(list.getSelectedValue())){
+				ftpClient.deleteFile(list.getSelectedValue());
+			}
+			
 		}
 	}
 
@@ -344,6 +359,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 		if(e.getSource() == list){
 			
 			if(list.getSelectedIndex() == 0){
+				btnEliminarDirectorio.setText("Eliminar Directorio");
 				try {
 					ftpClient.changeToParentDirAndInflateList();
 				} catch (Exception e1) {
@@ -356,6 +372,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 				
 				if(isDir(selectedItem)){
 					btnDownload.setEnabled(false);
+					btnEliminarDirectorio.setText("Eliminar Directorio");
 					String dir = Utilidades.sliceSelectedItem(selectedItem).trim();
 					ftpClient.setSelectedDirectory(dir);
 					try {
@@ -364,6 +381,7 @@ public class Main extends JFrame implements ActionListener, MouseListener{
 					}
 					
 				}else {
+					btnEliminarDirectorio.setText("Eliminar Archivo");
 					btnDownload.setEnabled(true);
 				}
 				
