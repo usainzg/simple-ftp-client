@@ -68,7 +68,7 @@ public class MyClient {
 			boolean login = client.login(usernameTxt.getText(), new String(passwordTxt.getPassword()));
 			return login ? 1 : 0;
 		} catch (IOException e) {
-			errLbl.setText("Error al intentar logearse.");
+			printToErrLblAndClearMsgLbl("Error al intentar logearse");
 			return -1;
 		}
 	}
@@ -82,10 +82,9 @@ public class MyClient {
 			if(client.isConnected()) return client.listFiles();
 			else return null;
 		}catch(IOException e){
-			errLbl.setText("Error al recoger lista de archivos.");
+			printToErrLblAndClearMsgLbl("Error al recoger lista de archivos.");
 			return null;
 		}
-		
 	}
 	
 	public int logoutClient() throws IOException {
@@ -97,6 +96,22 @@ public class MyClient {
 	
 	public void disconnectClient() throws IOException {
 		if(client.isConnected()) client.disconnect();
+	}
+	
+	
+	
+	public void setSelectedDirectory(String dir){
+		selectedDirectory = dir;
+	}
+	
+	public void clearList(){
+		model.removeAllElements();
+	}
+	
+	private void getClearAndInflateList() throws Exception{
+		FTPFile[] files = getFilesList();
+		clearList();
+		inflateList(files);
 	}
 	
 	private void inflateList(FTPFile[] ficheros){
@@ -114,20 +129,6 @@ public class MyClient {
 		list.setModel(model);
 	}
 	
-	public void setSelectedDirectory(String dir){
-		selectedDirectory = dir;
-	}
-	
-	public void clearList(){
-		model.removeAllElements();
-	}
-	
-	private void getClearAndInflateList() throws Exception{
-		FTPFile[] files = getFilesList();
-		clearList();
-		inflateList(files);
-	}
-	
 	private void changeToParentDir(){
 		try{
 			if(client.printWorkingDirectory().equals("/")) return;
@@ -136,7 +137,7 @@ public class MyClient {
 			selectedDirectory = client.printWorkingDirectory();
 			client.changeWorkingDirectory(selectedDirectory);
 		}catch(IOException e){
-			errLbl.setText("Conexion perdida con el servidor.");
+			printToErrLblAndClearMsgLbl("Conexion con el servidor perdida");
 		}
 		
 	}
@@ -145,7 +146,7 @@ public class MyClient {
 		try{
 			client.changeWorkingDirectory(selectedDirectory);
 		}catch(IOException e){
-			errLbl.setText("Conexion perdida con el servidor.");
+			printToErrLblAndClearMsgLbl("Conexion con el servidor perdida");
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class MyClient {
 			client.storeFile(name, fis);
 			getClearAndInflateList();
 		}catch(Exception e){
-			errLbl.setText("Error al subir " + file.getName() + " al servidor.");
+			printToErrLblAndClearMsgLbl("Error al subir " + file.getName() + " al servidor.");
 		}finally{
 			if(fis != null)
 				try {
@@ -189,12 +190,12 @@ public class MyClient {
 			out = new BufferedOutputStream(new FileOutputStream(filePath));
 			boolean success = client.retrieveFile(path, out);
 			if(success){
-				msgLbl.setText("DESCARGA CORRECTA");
+				printToMsgLblAndClearErrLbl("DESCARGA CORRECTA");
 			}else{
-				errLbl.setText("DESCARGA NO COMPLETADA");
+				printToErrLblAndClearMsgLbl("DESCARGA NO COMPLETADA");
 			}
 		} catch (IOException e) {
-			errLbl.setText("Conexion perdida con el servidor");
+			printToErrLblAndClearMsgLbl("Conexion con el servidor perdida.");
 		}finally{
 			if(out != null){
 				try {
@@ -209,11 +210,11 @@ public class MyClient {
 	public void createDir(String dirName){
 		try{
 			boolean dirCreated = client.makeDirectory(dirName);
-			if(dirCreated) msgLbl.setText("Directorio creado");
-			else errLbl.setText("No se ha podido crear el directorio");
+			if(dirCreated) printToMsgLblAndClearErrLbl("Directorio creado");
+			else printToErrLblAndClearMsgLbl("No se ha podido crear el directorio");
 			getClearAndInflateList();
 		}catch(Exception e){
-			errLbl.setText("Conexion con el servidor perdida");
+			printToErrLblAndClearMsgLbl("Conexion con el servidor perdida.");
 		}
 	}
 	
@@ -222,22 +223,32 @@ public class MyClient {
 			String dirToDelete = client.printWorkingDirectory();
 			changeToParentDir();
 			boolean dirDeleted = client.removeDirectory(dirToDelete);
-			if(dirDeleted) msgLbl.setText("Directorio eliminado");
-			else errLbl.setText("No se ha podido borrar el directorio");
+			if(dirDeleted) printToMsgLblAndClearErrLbl("Directorio eliminado");
+			else printToErrLblAndClearMsgLbl("No se ha podido borrar el directorio");
 			getClearAndInflateList();
 		}catch(Exception e){
-			errLbl.setText("Conexion con el servidor perdida");
+			printToErrLblAndClearMsgLbl("Conexion con el servidor perdida.");
 		}
 	}
 	
 	public void deleteFile(String fileName){
 		try{
 			boolean fileDeleted = client.deleteFile(fileName);
-			if(fileDeleted) msgLbl.setText("Fichero eliminado");
-			else errLbl.setText("No se ha podido borrar el fichero");
+			if(fileDeleted) printToMsgLblAndClearErrLbl("Fichero eliminado");
+			else printToErrLblAndClearMsgLbl("No se ha podido borrar el fichero");
 			getClearAndInflateList();
 		}catch(Exception e){
-			errLbl.setText("Conexion con el servidor perdida");
+			printToErrLblAndClearMsgLbl("Conexion con el servidor perdida.");
 		}
+	}
+	
+	private void printToMsgLblAndClearErrLbl(String msg){
+		errLbl.setText("");
+		msgLbl.setText(msg);
+	}
+	
+	private void printToErrLblAndClearMsgLbl(String msg){
+		msgLbl.setText("");
+		errLbl.setText(msg);
 	}
 }
